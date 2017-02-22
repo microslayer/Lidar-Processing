@@ -1,0 +1,5 @@
+*.pyc
+tiles/*.png
+*.xml
+*.iml
+/process/s3_keys.txt

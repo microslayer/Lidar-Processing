@@ -1,0 +1,52 @@
+<html>
+<head>
+	<link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+	<script src="lib/leaflet/leaflet.js"></script>
+    <script src="lib/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+	<!-- Div to hold the map.  Styling can be either inline, in the style attribute, or in css as in the earlier examples -->
+    <div id="mapid" style="width: 100%; height: 100%;"></div>
+</body>
+
+<!-- That's it for the web page.  The real action is in the xxxxxxxxxx:-->
+<script>
+
+// JQuery document ready function runs when the page is done loading.
+$( document ).ready(function(){
+
+    // First, create the map. L gives us access to Leaflet functions.  map() creates a new map instance. 
+	// See http://leafletjs.com/reference-1.0.0.html#map-factory - there is a second, optional "options"
+	// that allow you to create the map with different properties - panning inertia, mousewheel button behavior,
+	// stearting layers, etc., etc. But for now we just need a basic map.  Note that the map is crated with
+	// using the size of the <div> tag is is created within, 600 x 400 pixels.
+	var map = L.map('mapid');
+	
+	// Now that we have a map, we can tell it what the starting view is.  The first argument is a pair of coordinate points
+	// the second is the zoom level.  The higher the zoom number, the closer in the zoom.  See http://wiki.openstreetmap.org/wiki/Zoom_levels
+	// for exact zoom level information.  The coordinates here are coordinates for New York City, which is often given as downtown manhattan.
+	map.setView([38.9013, -77.036], 13);
+	// But we don't yet have anything to show in the map.  Here, we can tell it to add a starting map layer.  This sample loads tiles
+	// output from tilemill (and extracted from mbtiles format to the file system by mbutil).  This is a "tileLayer", that is a map layer that is 
+	// pre-rendered as images, divided into subdirectories and file names that correpond to a global map tiling scheme.  
+	// See this link for an explanation https://www.mapbox.com/help/how-web-maps-work/ 
+	// Quadtrees are a closely related topic which can also be used for spatial indexing https://en.wikipedia.org/wiki/Quadtree
+	// and which is also the basis for the geohash representation of locations (conversion of z/y/x into character strings).  This 
+	// post may also be of interest: http://blog.notdot.net/2009/11/Damn-Cool-Algorithms-Spatial-indexing-with-Quadtrees-and-Hilbert-Curves
+	// Note that there are more than one in use: https://knowledge.safe.com/articles/180/which-web-map-tiling-scheme-should-i-use.html
+    var mapLayer = L.tileLayer('http://localhost/tiles/{z}/{x}/{y}.png', {
+        minZoom: 13, maxZoom: 15,
+    });
+	
+	// Note that we can access many other basemaps through leaflet.  Here is a link that allows you to try you different leaflet-compatible
+	// map layers.  http://leaflet-extras.github.io/leaflet-providers/preview/  To use these, you should be able to copy and paste the 
+	// "plain javascript" portion of  the code at the top of this page.  For example:
+	// var mapLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	//	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+	//});
+	
+	// Now that we have a variable that contains the map layer, we can add it to the map:
+	mapLayer.addTo(map); 
+});
+</script>
+</html>

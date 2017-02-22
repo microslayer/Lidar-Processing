@@ -1,0 +1,6 @@
+work_path = "C:/Projects/lidar_project/scratch/"
+output_bucket = "lidar-maps-output"
+las_tools_dir = "C:/LAStools/LAStools/bin/"
+saga_cmd_dir = "C:/saga/"
+s3_url = "https://s3.amazonaws.com/lidar-maps-data"
+gdal_dir = "C:/Program Files/GDAL/"
