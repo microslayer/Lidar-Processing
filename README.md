@@ -1,4 +1,4 @@
-## LidarMaps
+## Lidar-Processing
 
 Code to generate map layers from airborne lidar and display them in web maps.
 
