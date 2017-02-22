@@ -8,6 +8,7 @@ import math
 import os
 import boto
 from boto.s3.key import Key
+import pandas as pd
 
 def get_urls_to_process():
     # Requires pip install requests
@@ -56,16 +57,21 @@ def reproject_to_text(input_file):
     x = (x * 20037508.34 / 180.0)
     y = (np.log(np.tan((90.0 + y) * math.pi / 360.0)) / (math.pi / 180.0)* 20037508.34 / 180.0)
     z = (f.Z * f.header.scale[2])
+    dataset = np.vstack([x, y, z]).transpose().astype(np.int32)
+    df = pd.DataFrame(dataset)
+    df.columns = ['x', 'y', 'z']
+    max_z = df.groupby(['x', 'y'], sort=False).max()
+
     out_file = input_file.replace(".las", "_3857.txt")
     counter = 0
+
     with open(out_file, "w") as txt_file:
-        for i in range(x.shape[0]):
-            counter += 1
-            line = " ".join([str(num) for num in [x[i], y[i], z[i]]]) + "\n"
+        for a in max_z.iterrows():
+            line = " ".join([str(a[0][0]), str(a[0][1]), str(a[1].z)]) + "\n"
             txt_file.write(line)
+            counter += 1
             if (counter % 100000) == 0:
-                print ("Processed {0} of {1} points ({2}%)".format(counter, n,
-                    round(100 * float(counter) / n), 0))
+                print ("Processed {0} points".format(counter))
     f.close()
     return out_file
 
