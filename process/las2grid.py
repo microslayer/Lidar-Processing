@@ -117,6 +117,7 @@ def generate_grids(input_file):
     new_file = write_bin_file(input_file.replace(".las", "_range_z.npy"), arr, 6,  x.min(), y.min(), no_data_value)
     output_files.append(new_file)
 
+    """
     # Clean up - seems to help reduce memory usage a bit
     max_z = None
     min_z = None
@@ -151,7 +152,7 @@ def generate_grids(input_file):
 
     # Clean up
     max_i = None
-
+    """
     return output_files
 
 # For debugging - you can display gridded numpy arrays in matplotlib:
