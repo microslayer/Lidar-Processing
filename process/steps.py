@@ -2,13 +2,7 @@ import xmltodict
 import requests
 import subprocess as sb
 import config as conf
-import laspy as ls
-import numpy as np
-import math
-import os
-import boto
-from boto.s3.key import Key
-import pandas as pd
+import las2grid as lg
 
 def get_urls_to_process():
     # Requires pip install requests
@@ -36,44 +30,24 @@ def convert_to_las(input_file):
     sb.call(cmd, shell=False)
     return input_file.replace(".laz", ".las")
 
-def reproject_to_text(input_file):
-    """"
-    Be sure laspy folder is in the current directory
-
-    Execute these commands at the command line:
-    set CONDA_FORCE_32BIT=
-    conda create -n py27 python=2.7
-    activate py27
-    pip install numpy
-
-    In pycharm, selecct this virtual environment as the project interpreter
-    """
-    f = ls.file.File(input_file, mode="rw")
-    x = (f.X * f.header.scale[0]) + f.header.offset[0]
-    y = (f.Y * f.header.scale[1]) + f.header.offset[1]
-
-    # Projection from https://gist.github.com/springmeyer/871897, vectorized with numpy
-    n = len(f.points)
-    x = (x * 20037508.34 / 180.0)
-    y = (np.log(np.tan((90.0 + y) * math.pi / 360.0)) / (math.pi / 180.0)* 20037508.34 / 180.0)
-    z = (f.Z * f.header.scale[2])
-    dataset = np.vstack([x, y, z]).transpose().astype(np.int32)
-    df = pd.DataFrame(dataset)
-    df.columns = ['x', 'y', 'z']
-    max_z = df.groupby(['x', 'y'], sort=False).max()
-
-    out_file = input_file.replace(".las", "_3857.txt")
+def export_text(arr, out_file):
     counter = 0
 
+    # Generate max z file for DSM
     with open(out_file, "w") as txt_file:
-        for a in max_z.iterrows():
+        for a in arr.iterrows():
             line = " ".join([str(a[0][0]), str(a[0][1]), str(a[1].z)]) + "\n"
             txt_file.write(line)
             counter += 1
             if (counter % 100000) == 0:
                 print ("Processed {0} points".format(counter))
-    f.close()
-    return out_file
+
+    return
+
+
+def generate_grids(input_file):
+    out_files = lg.generate_grids(input_file)
+    return out_files
 
 def create_point_cloud(input_file):
     output_file = input_file.replace(".txt", "")
@@ -94,11 +68,13 @@ def fill_grid_gaps(input_file):
     return output_file
 
 def export_tiff(input_file):
-    output_file = input_file.replace(".sdat", ".tif")
+    # output_file = input_file.replace(".sdat", ".tif")
     # Exports as rendered 8-bit raster
-    cmd = "saga_cmd io_gdal 1 -GRIDS={0} -FILE={1} -FORMAT=7 -TYPE=1 -SET_NODATA=0 -NODATA=3.000000 -OPTIONS=".format(input_file, output_file)
+    #Q cmd = "saga_cmd io_gdal 1 -GRIDS={0} -FILE={1} -FORMAT=7 -TYPE=1 -SET_NODATA=0 -NODATA=3.000000 -OPTIONS=".format(input_file, output_file)
+    # sb.call(cmd, shell=False)
     # Exports as floating point raster
-    # cmd = conf.saga_cmd_dir + "saga_cmd io_gdal 2 -GRIDS={0} -FILE={1} -OPTIONS=".format(input_file, output_file)
+    output_file = input_file.replace(".sdat", "_float.tif")
+    cmd = conf.saga_cmd_dir + "saga_cmd io_gdal 2 -GRIDS={0} -FILE={1} -OPTIONS=".format(input_file, output_file)
     sb.call(cmd, shell=False)
     return output_file
 
@@ -107,21 +83,3 @@ def add_srs_to_tiff(input_file):
     cmd = conf.gdal_dir + "gdal_translate.exe -a_srs EPSG:3857 {0} {1}".format(input_file, output_file)
     sb.call(cmd, shell=False)
     return output_file
-
-def upload_to_s3(source_file):
-    """
-    This requirse Amazon boto module - pip install boto
-    """
-    bucket = conf.output_bucket
-    aws_access_key_id = conf.s3_access_key
-    aws_secret_access_key = conf.secret_access_key
-    conn = boto.connect_s3(aws_access_key_id, aws_secret_access_key)
-    bucket = conn.get_bucket(bucket, validate=True)
-    dest_file = os.path.basename(source_file).replace(".txt", "")
-    k = Key(bucket)
-    k.key = dest_file
-    target_size = os.path.getsize(source_file)
-    uploaded_size = k.set_contents_from_filename(source_file)
-    if target_size == uploaded_size:
-        return True
-    return False
