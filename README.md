@@ -20,7 +20,7 @@ Code to generate map layers from airborne lidar and display them in web maps.
 
 /process - batch process python files - may be distributed among worker machines
 
-/db - Databaase scripts - postgres table definitions, stored procedure code, etc.
+/db - Database scripts - postgres table definitions, stored procedure code, etc.
 
 /docs - Notes and documentation
 
