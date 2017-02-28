@@ -8,7 +8,7 @@ class Sample(object):
     def index(self):
         return "running!"
 
-    # Runs when /top_x is in the url
+    # Runs when /test is in the url
     def test(self, x=10):
 
         # Required for access from external sites.  If you don't have this
