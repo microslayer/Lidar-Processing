@@ -83,11 +83,11 @@ class Server(object):
     # --------------------------------------------------------------------------------
 
     @cherrypy.expose
-    def example(self, param1, param2):
+    def example(self, lat, lon):
         # Example endpoint, accessible via:
         # http://localhost:8080/example?param1=test1&param2=test2
         result = self.get_response_wrapper()
-        result["data"] = [param1, param2]
+        result["data"] = [lat, lon]
         return self.encode_results(result)
 
 # This should usually be the main entry point of the service application, so __name__ should equal "__main__"
