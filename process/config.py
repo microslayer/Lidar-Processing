@@ -1,4 +1,4 @@
-work_path = "C:/Projects/lidar-data/"
+work_path = "C:/Projects/lidar-data/test_file/"  # C:/Projects/lidar-data/georgetown_de/"
 output_bucket = "lidar-maps-output"
 las_tools_dir = "C:/LAStools/LAStools/bin/"
 saga_cmd_dir = "C:/saga/"

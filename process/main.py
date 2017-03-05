@@ -26,12 +26,13 @@ def main():
             file_name = os.path.basename(url)
             cur_file = conf.work_path + file_name
             # TODO: move processed-file tracking into db/services:
-            if os.path.isfile(cur_file.replace(".laz", "._max_z_float_3857.tif")):
+            if os.path.isfile(cur_file.replace(".laz", "_max_z_float_3857.tif")):
                 continue
             # First download the file to a local directory
             steps.download_file(url, cur_file)
             # Then run each step in sequence
-            cur_file = run_function(steps.convert_to_las, cur_file)
+            if cur_file.endswith(".laz"):
+                cur_file = run_function(steps.convert_to_las, cur_file)
             grid_files = run_function(steps.generate_grids, cur_file)
             for f in grid_files:
                 # cur_file = run_function(steps.create_point_cloud, f)

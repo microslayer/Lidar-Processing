@@ -37,7 +37,7 @@ def write_bin_file(file_name, arr, bit_depth, x_min, y_min, no_data_value):
     dt = np.float32
     if bit_depth == 3:
         dt = np.int32
-    np.save(file_name, arr.astype(np.float32))
+    np.save(file_name, arr.astype(dt))
 
     # Numpy will add .npy by defult - remove to get the base file name, and let saga import the data
     output_file = file_name.replace(".npy", "")
@@ -66,7 +66,6 @@ def generate_grids(input_file):
     y = (f.Y * f.header.scale[1]) + f.header.offset[1]
 
     # Projection from https://gist.github.com/springmeyer/871897, vectorized with numpy
-    n = len(f.points)
     x = (x * 20037508.34 / 180.0)
     y = (np.log(np.tan((90.0 + y) * math.pi / 360.0)) / (math.pi / 180.0) * 20037508.34 / 180.0)
     z = (f.Z * f.header.scale[2])
@@ -106,7 +105,7 @@ def generate_grids(input_file):
     output_files.append(new_file)
 
     # Output min z
-    arr[:,:] = no_data_value
+    arr[:, :] = no_data_value
     arr[existing_y, existing_x] = min_z.z.values
     new_file = write_bin_file(input_file.replace(".las", "_min_z.npy"), arr, 6,  x.min(), y.min(), no_data_value)
     output_files.append(new_file)
@@ -117,7 +116,6 @@ def generate_grids(input_file):
     new_file = write_bin_file(input_file.replace(".las", "_range_z.npy"), arr, 6,  x.min(), y.min(), no_data_value)
     output_files.append(new_file)
 
-    """
     # Clean up - seems to help reduce memory usage a bit
     max_z = None
     min_z = None
@@ -131,12 +129,12 @@ def generate_grids(input_file):
 
     # Output classification
     arr[:,:] = no_data_value
-    new_file = arr[existing_y, existing_x] = max_c.z.values
+    arr[existing_y, existing_x] = max_c.z.values
     new_file = write_bin_file(input_file.replace(".las", "_class.npy"), arr, 6,  x.min(), y.min(), no_data_value)
     output_files.append(new_file)
 
     # Clean up
-    smax_c = None
+    max_c = None
     df = None
 
     # Intensity
@@ -152,7 +150,7 @@ def generate_grids(input_file):
 
     # Clean up
     max_i = None
-    """
+
     return output_files
 
 # For debugging - you can display gridded numpy arrays in matplotlib:
@@ -162,4 +160,4 @@ def generate_grids(input_file):
 
 if __name__ == "__main__":
     # Single test file:
-    output_files = generate_grids(conf.work_path + "20150429_QL1_18TXM690689_SW_1.las")
+    output_files = generate_grids("C:/Projects/lidar-data/test_file/20150429_QL1_18TXM690689_SW_1.las")
