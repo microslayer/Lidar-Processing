@@ -1,16 +1,17 @@
 // When the file is loaded it creates a new object in the lm namepace representing the map.
-// Loading this via the jquery."when" function.  The new keyword here creates a new instance 
+// Loading this via the jquery."when" function.  The new keyword here creates a new instance
 // of the function, with a newly-created value of "this", which means it functions more like
 // a normal class in other languages, where multiple instances of the class can be created.
-// There are many opinions on how best to to this - see this discussion for example: 
+// There are many opinions on how best to to this - see this discussion for example:
 // http://stackoverflow.com/questions/9782379/deathmatch-self-executing-anonymous-function-vs-new-function
 lm.lmap =  new function () {
   // "this" refers to the current function.  Since we need to access it from
   // other functions, which also have their own "this", we need to save it
   // in a local variable.
   var that = this;
+  var map = null;
 
-  // We keep these variables private inside this curent "closure" scope.  
+  // We keep these variables private inside this curent "closure" scope.
   // using "this.ini" let's us access init() from outside this module, as
   // long as we have a reference to "this".
   this.init = function(cfg, state, callback){
@@ -21,7 +22,7 @@ lm.lmap =  new function () {
      that.ajaxUrl = cfg.ajaxUrl;
      // L is a global used by leaflet.  We can create the new leaflet map
      // by passing in the div id into which we want to display the map.
-     var map = L.map('map');
+     map = L.map('map');
      map.setView([cfg.startingLat, cfg.startingLon], cfg.startingZoom);
      var mapLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png', {
           minZoom: 5, maxZoom: 19
@@ -49,7 +50,7 @@ lm.lmap =  new function () {
     that.state.localityName = "Scranton, PA"
     that.state.tileCount = "25"
     alert(JSON.stringify(data, 4));
-    that.notify(that.state);
+    that.notify(that.state); 
   };
 
   this.update = function(newState){
