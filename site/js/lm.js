@@ -19,16 +19,20 @@ $(document).ready(function(){
     startingZoom: 13
   }
 
- // Set up starting state - this is a dictionary into which we can put
- // any information that needs to be passed between modules, without creating
- // global variables.
+  // Set up starting state - this is a dictionary into which we can put
+  // any information that needs to be passed between modules, without creating
+  // global variables.
   var state = { };
 
-// This is the function the map will call when anything in the state changes.
-// Note that the map can update the UI, zoom or pan or do anything else without
-// changing the state.  State changes are just for those changes that need to
-// be reflected in actions taken by other modules.  Currently these are
-// called explicitly but we can change this to be generic if we have many modules
+  // This is the function the map will call when anything in the state changes.
+  // Note that the map can update the UI, zoom or pan or do anything else without
+  // changing the state.  State changes are just for those changes that need to
+  // be reflected in actions taken by other modules.  Currently these are
+  // called explicitly but we can change this to be generic if we have many modules
+  // It's likely more maintainable to centrlize the inter-module communication here
+  // instead of spreading around module references, which gets complicated fase
+  // ******* TODO -add callbacks for modules that need to share data *******
+
   var mapCallback = function(state){
    lm.example.update(state);
   }
@@ -37,26 +41,10 @@ $(document).ready(function(){
    lm.map.update(state);
   }
 
- // This creates a variable representing the modules and all the functions we
- // need to manipulate them, stored for example in map.js.  After it is loaded,
- // our namespace, window.lm, should contain a reference to an object
- // called lmap, accessed via lm.lmap.  The jquery when function lets
- // you load multiple modules, and executes the done() function only after
- // all the modules are loaded.  This lets our js app be referenced only by
- // lildar_maps.js in the html, while in fact it contains several modules
- // containing objects that are isolated into the lm namespace.
- $.when(
-    $.getScript( "js/map.js" ),
-    $.getScript( "js/example.js" ),
-    // ******* TODO - add modules here as needed, for example, for town
-    // selector/autocomplete, or others as needed. *******
-    $.Deferred(function( deferred ){
-        $( deferred.resolve );
-    })
- ).done(function(){
-    // Now we have an lmap in our namespace, and can access its functions.
-    lm.lmap.init(config, state, mapCallback);
-    lm.example.init(config, state, exampleCallback);
-    // ******* TODO -initialize other modules similarly. *******
-  });
+  // Each module loaded after this one should have put their objects into the lm
+  // global variable, and can be initialized here.
+
+  lm.lmap.init(config, state, mapCallback);
+  lm.example.init(config, state, exampleCallback);
+  // ******* TODO -initialize other modules similarly. *******
 });
