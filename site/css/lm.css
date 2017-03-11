@@ -1,4 +1,149 @@
+
+.container-fluid {
+	background-color: black;
+}
+
+#banner {
+	height:185px;
+	background-image: url("../img/bannerbackground.jpg");
+	background-position: -300px 1400px;
+	background-color: black;
+	background-attachment: fixed;
+	margin-bottom: 55px;
+}
+
+#semi_circle {
+	height: 250px;
+	width: 250px;
+	border-radius: 125px;
+	background-color: black;
+	margin: 0 auto;	
+	margin-top: 65px;
+}
+
+#circle_text {
+	text-align: center;
+	font-weight: bold;
+	font-size: 20px;
+	color: white;
+	padding-top: 40px; 
+}
+
+#intro {
+	text-align: center;
+	margin: 0 auto;
+	margin-bottom: 25px;
+	width: 40%;
+	color: white;
+}
+
+h3 {
+	text-align: center;
+	margin-bottom: 55px;
+	border-top: 0.5px solid white;
+	border-bottom: 0.5px solid white;
+}
+
+h4 {
+	text-align: center;
+	margin-bottom: 55px;
+	border-top: 0.5px solid white;
+	border-bottom: 0.5px solid white;
+}
+
+#goal_header {
+	text-align: center;
+	margin-bottom: 25px;
+	width: 40%;
+	margin: 0 auto;
+	color: white;
+}
+#goal_body {
+	text-align: center;
+	margin: 0 auto;
+	margin-bottom: 25px;
+	width: 39%;
+	color: white;
+}
+
+#map_area {
+	width: 100%;
+	margin: 0 0;
+	height: 55%;
+}
+
 #map {
-  width: 100%;
-  height: 100%;
+	position: absolute;
+  	width: 100%;
+  	height: 55%;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;  	
+	margin-bottom: 65px;
+	border:  0.5px solid;
+	background-color: gray;
+	z-index: 0;
+}
+
+
+#map_panel {
+	position: absolute;
+	background-color: white;
+	height: 250px;
+	width: 150px;
+	border-right: 0.5px solid;
+	border-top: 0.5px solid;
+	border-bottom: 0.5px solid;
+	border-top-right-radius: 5px; 
+	border-bottom-right-radius: 5px;
+	z-index: 99;
+	margin-top: 100px;
+	left: 0;
+}
+
+#panel_title {
+	text-align: center;
+	text-decoration: underline;
+}
+
+#panel_content {
+	margin-top: 25px;
+	margin-left: 5px;
+}
+
+#elev_items {
+	display: block;
+}
+
+
+#forest_items {
+	display: block;
+}
+
+
+li {
+	margin-left: -25px;
+	list-style: none;
+}
+
+a:link, a:visited, a:hover {
+	color:black;
+	text-decoration: none;
+}
+
+a:active {
+	color: red;
+	text-decoration: none;
+}
+
+#process_descrp_area {
+	position: relative;	
+}
+
+#descrp_header {
+	width: 40%;
+	margin: 0 auto;
+	margin-bottom: 15px;
+	color: white;
 }

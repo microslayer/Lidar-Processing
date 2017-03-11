@@ -1,15 +1,84 @@
 <html>
-<head>
-	<link rel="stylesheet" href="lib/leaflet/leaflet.css" />
-	<link rel="stylesheet" href="css/lm.css" />
-	<script src="lib/leaflet/leaflet.js"></script>
-  <script src="lib/jquery-3.1.1.min.js"></script>
-	<script src="js/lm.js"></script>
-	<script src="js/map.js"></script>
-	<script src="js/example.js"></script>
-</head>
-<body>
-	<!-- Div to hold the map.  Styling can be either inline, in the style attribute, or in css as in the earlier examples -->
-    <div id="map"></div>
-</body>
+	<head>
+		<link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+		<link rel="stylesheet" href="css/lm.css" />
+		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="lib/font-awesome-4.7.0/css/font-awesome.min.css">
+		<script src="lib/leaflet/leaflet.js"></script>
+	  	<script src="lib/jquery-3.1.1.min.js"></script>
+	  	<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+		<script src="js/lm.js"></script>
+	</head>
+
+	<body>
+		<div class="container-fluid">
+	   		<div class="row" id="banner">
+		   		<div id="semi_circle">
+		    		<div id="circle_text">
+		    			GTECH 73400<br />presents..<br />LIDAR MAPS
+		    		</div>
+		    	</div>
+	    	</div>
+	    </div>
+	    <div class="container-fluid">
+	    	<div class="row" id="intro_area">
+	    		<div id="intro">
+	    			<p>LIDAR DATA IS BEING GATHERED AT A RAPID PACE ACROSS THE COUNTRY, BUT DATA PRODUCTS THAT TAKE ADVANTAGE OF THIS DATA ARE LAGGING...</p>
+	    		</div>
+	    	</div>
+	    	<div class="row" id="goal_area">
+	    		<div id="goal_header">
+	    			<h3>OUR GOAL</h3>
+	    		</div>
+	    		<div id="goal_body">
+	    			<p>THE GOAL OF THIS PROJECT IS TO BUILD AN OPEN-SOURCE LIDAR PROCESSING TOOL THAT HELPS LOCAL GIS MANAGERS AND MAP USERS GET USEFUL INFO FROM EXISTING LIDAR DATASETS MORE EASILY. EXPLORE THE MAP BELOW OR SCROLL DOWN TO READ MORE ABOUT THE PROCESSES WE RUN.</p>
+	    		</div>
+	    	</div>
+	    </div>
+	    <div class="container-fluid">
+		    <div class="row" id="map_area">
+				<div id="map_panel">
+					<div id="panel_title">
+						Process Legend
+					</div>
+					<div id="panel_content">
+						<div id="elev_link">
+							<a id="elev_click" href="#"><i class="fa fa-angle-right" id="elev"></i> Elevation</a>
+								<div id="elev_items">
+									<ul id="elev_items">
+										<li><a href="#">DEM</a></li>
+										<li><a href="#">DSM</a></li>
+										<li><a href="#">nDSM</a></li>
+									</ul>
+								</div>
+						</div>
+						<div id="forest_link">
+							<a id="forest_click" href="#"><i class="fa fa-angle-right" id="forest"></i> Forestry</a>
+								<div id="forest_items">
+									<ul id="forest_items">
+										<li><a href="#">Slope & Aspect</a></li>
+										<li><a href="#">Solar Radiation</a></li>
+										<li><a href="#">Tree Classification</a></li>
+									</ul>
+								</div>
+						</div>
+					</div>
+				</div>
+				<div id="map">
+				</div>
+			</div>
+		</div>
+		<div class="container-fluid" id="process_descrp_area">
+			<div class="row" >
+				<div id="descrp_header">
+					<h4>ELEVATION PROCESSING</h4>
+				</div>
+				<div id="descrp_body">
+				</div>
+				<div id="descrp_header">
+					<h4>FORESTRY PROCESSING</h4>
+				</div>
+				<div id="descrp_body">
+				</div>
+	</body>
 </html>

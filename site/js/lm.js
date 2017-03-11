@@ -48,3 +48,16 @@ $(document).ready(function(){
   lm.example.init(config, state, exampleCallback);
   // ******* TODO -initialize other modules similarly. *******
 });
+
+
+
+$(document).ready(function() {
+  $("#elev_items").hide();
+  $("#forest_items").hide();
+  $("a#elev_click").click(function() {
+    $("#elev_items").toggle("fast");
+  });
+  $("a#forest_click").click(function() {
+    $("#forest_items").toggle("fast");
+  });
+});
