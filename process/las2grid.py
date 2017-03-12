@@ -58,7 +58,7 @@ def write_bin_file(file_name, arr, bit_depth, x_min, y_min, no_data_value):
 
 def generate_grids(input_file):
     no_data_value = -1
-    output_files = []
+    output_files = {}
 
     # Read in las file with laspy
     f = ls.file.File(input_file, mode="rw")
@@ -100,21 +100,21 @@ def generate_grids(input_file):
 
     # Output max z
     arr[:, :] = no_data_value
-    arr[existing_y, existing_x] = max_z.z.values
+    arr[existing_y, existing_x] = 100 # max_z.z.values
     new_file = write_bin_file(input_file.replace(".las", "_max_z.npy"), arr, 6,  x.min(), y.min(), no_data_value)
-    output_files.append(new_file)
+    output_files["max_z"] = new_file
 
     # Output min z
     arr[:, :] = no_data_value
     arr[existing_y, existing_x] = min_z.z.values
     new_file = write_bin_file(input_file.replace(".las", "_min_z.npy"), arr, 6,  x.min(), y.min(), no_data_value)
-    output_files.append(new_file)
+    output_files["min_z"] = new_file
 
     # Output range z
     arr[:,:] = no_data_value
     arr[existing_y, existing_x] = range_z.z.values
     new_file = write_bin_file(input_file.replace(".las", "_range_z.npy"), arr, 6,  x.min(), y.min(), no_data_value)
-    output_files.append(new_file)
+    output_files["range_z"] = new_file
 
     # Clean up - seems to help reduce memory usage a bit
     max_z = None
@@ -131,7 +131,7 @@ def generate_grids(input_file):
     arr[:,:] = no_data_value
     arr[existing_y, existing_x] = max_c.z.values
     new_file = write_bin_file(input_file.replace(".las", "_class.npy"), arr, 6,  x.min(), y.min(), no_data_value)
-    output_files.append(new_file)
+    output_files["max_c"] = new_file
 
     # Clean up
     max_c = None
@@ -140,13 +140,13 @@ def generate_grids(input_file):
     # Intensity
     df = pd.DataFrame(xyi)
     df.columns = ['x', 'y', 'z']
-    max_i = df.groupby(['x', 'y'], sort=False).max()
+    mean_i = df.groupby(['x', 'y'], sort=False).mean()
 
     # Output intensity
     arr[:,:] = no_data_value
-    arr[existing_y, existing_x] = max_i.z.values
+    arr[existing_y, existing_x] = mean_i.z.values
     new_file = write_bin_file(input_file.replace(".las", "_intensity.npy"), arr, 6,  x.min(), y.min(), no_data_value)
-    output_files.append(new_file)
+    output_files["mean_i"] = new_file
 
     # Clean up
     max_i = None

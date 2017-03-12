@@ -39,14 +39,14 @@ class Server(object):
     # --------------------------------------------------------------------------------
 
     @cherrypy.expose
-    def start_job(self, lat, lon):
-        # Example: http://localhost:8080/start_job?lat=41.409&lon=-75.662
+    def start_job(self, town_id):
+        # Example: http://localhost:8080/start_job?town_id=11850
         # Assigns a batch id, starts it off, and returns the job id to the client.
         result = self.get_response_wrapper()
         try:
-            job_id = bp.get_new_job_id()
-            tile_list = bp.get_tile_list(lat, lon)
-            bp.start_job(job_id, tile_list)
+            job_id = bp.get_new_job_id(town_id)
+            tile_list = bp.get_tile_list(town_id)
+            bp.start_job(job_id, town_id, tile_list)
             result["data"]["job_id"] = job_id
         except Exception as e:
             result["status"] = 500
@@ -54,24 +54,24 @@ class Server(object):
         return self.encode_results(result)
 
     @cherrypy.expose
-    def job_status(self, id):
+    def job_status(self, job_id):
         # Gets the status of the job.
         # Example: http://localhost:8080/job_status?id=4d006e4b-649d-42de-a6fc-1415751230a6
         result = self.get_response_wrapper()
         try:
-            result["data"] = bp.job_status(id)
+            result["data"] = bp.job_status(job_id)
         except Exception as e:
             result["status"] = 500
             result["message"] = "{0} {1}".format(e, tb.format_exc())
         return self.encode_results(result)
 
     @cherrypy.expose
-    def cancel_job(self, id):
+    def cancel_job(self, job_id):
         # Cancels the job.
         # Example: http://localhost:8080/cancel_job?id=3d3828ff-b425-4c49-a98a-4a963f3a939a
         result = self.get_response_wrapper()
         try:
-            result["data"] = bp.cancel_job(id)
+            result["data"] = bp.cancel_job(job_id)
         except Exception as e:
             result["status"] = 500
             result["message"] = "{0} {1}".format(e, tb.format_exc())
