@@ -5,7 +5,7 @@ import config as conf
 import traceback as tb
 
 class Server(object):
-
+    stub_mode = True
     # --------------------------------------------------------------------------------
     # Utility functions for CherryPy endpoints
     # --------------------------------------------------------------------------------
@@ -44,10 +44,15 @@ class Server(object):
         # Assigns a batch id, starts it off, and returns the job id to the client.
         result = self.get_response_wrapper()
         try:
-            job_id = bp.get_new_job_id(town_id)
-            tile_list = bp.get_tile_list(town_id)
-            bp.start_job(job_id, town_id, tile_list)
-            result["data"]["job_id"] = job_id
+            if Server.stub_mode:
+                result["data"]["job_id"] = 100
+                result["data"]["num_tiles"] = 32
+            else:
+                job_id = bp.get_new_job_id(town_id)
+                tile_list = bp.get_tile_list(town_id)
+                bp.start_job(job_id, town_id, tile_list)
+                result["data"]["job_id"] = job_id
+                result["data"]["num_tiles"] = len(tile_list)
         except Exception as e:
             result["status"] = 500
             result["message"] = "{0} {1}".format(e, tb.format_exc())
@@ -56,10 +61,19 @@ class Server(object):
     @cherrypy.expose
     def job_status(self, job_id):
         # Gets the status of the job.
-        # Example: http://localhost:8080/job_status?id=4d006e4b-649d-42de-a6fc-1415751230a6
+        # Example: http://localhost:8080/job_status?job_id=42
         result = self.get_response_wrapper()
         try:
-            result["data"] = bp.job_status(job_id)
+            if Server.stub_mode:
+                result["data"]["description"] = "Downloading files"
+                result["data"]["stage"] = "1 of 5"
+                result["data"]["percent_done"] = 10
+            else:
+                stage = bp.job_status(job_id)
+                # TODO - convert from stage number to text
+                result["data"]["description"] = "Downloading files"
+                result["data"]["stage"] = "{0} of 5".format(stage)
+                result["data"]["percent_done"] = stage * 20
         except Exception as e:
             result["status"] = 500
             result["message"] = "{0} {1}".format(e, tb.format_exc())
@@ -68,10 +82,14 @@ class Server(object):
     @cherrypy.expose
     def cancel_job(self, job_id):
         # Cancels the job.
-        # Example: http://localhost:8080/cancel_job?id=3d3828ff-b425-4c49-a98a-4a963f3a939a
+        # Example: http://localhost:8080/cancel_job?job_id=45
         result = self.get_response_wrapper()
         try:
-            result["data"] = bp.cancel_job(job_id)
+            if Server.stub_mode:
+                result["data"]["description"] = "Job cancelled"
+            else:
+                bp.cancel_job(job_id)
+                result["data"]["description"] = "Job cancelled"
         except Exception as e:
             result["status"] = 500
             result["message"] = "{0} {1}".format(e, tb.format_exc())
