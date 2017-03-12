@@ -95,8 +95,72 @@ class Server(object):
             result["message"] = "{0} {1}".format(e, tb.format_exc())
         return self.encode_results(result)
 
+    @cherrypy.expose
+    def completed_jobs(self):
+        # Cancels the job.
+        # Example: http://localhost:8080/completed_jobs
+        result = self.get_response_wrapper()
+        try:
+            if Server.stub_mode:
+                result["data"] = [
+                    {
+                        "name": "Northampton, MA",
+                        "town_id": 11850,
+                        "job_id": 45
+                    },
+                    {
+                        "name": "Scranton, PA",
+                        "town_id": 28369,
+                        "job_id": 46
+                    },
+                ]
+            else:
+                # TODO: update with db query of jobs and towns tables
+                pass
+        except Exception as e:
+            result["status"] = 500
+            result["message"] = "{0} {1}".format(e, tb.format_exc())
+        return self.encode_results(result)
+
+    @cherrypy.expose
+    def layers_in_job(self, job_id):
+        # Cancels the job.
+        # Example: http://localhost:8080/layers_in_job?job_id=45
+        result = self.get_response_wrapper()
+        try:
+            if Server.stub_mode:
+                result["data"] = [
+                    {
+                        "name": "Digital Surface Model",
+                        "url": "/45_dsm"
+                    },
+                    {
+                        "name": "Digital Elevation Model",
+                        "url": "/45_dem"
+                    },
+                    {
+                        "name": "Height Model",
+                        "url": "/45_ndsm"
+                    },
+                    {
+                        "name": "Solar Radiation",
+                        "url": "/45_sol"
+                    },
+                    {
+                        "name": "Tree Cover",
+                        "url": "/45_tree"
+                    },
+                ]
+            else:
+                # TODO: update with db query of jobs and map_layers tables
+                pass
+        except Exception as e:
+            result["status"] = 500
+            result["message"] = "{0} {1}".format(e, tb.format_exc())
+        return self.encode_results(result)
+
     # --------------------------------------------------------------------------------
-    # Other endpoints as needed - don't put too much here so this file doesn' get
+    # Other endpoints as needed - don't put too much here so this file doesn't get
     # too huge - most of the work can be done in external modules.
     # --------------------------------------------------------------------------------
 
