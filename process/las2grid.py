@@ -100,7 +100,7 @@ def generate_grids(input_file):
 
     # Output max z
     arr[:, :] = no_data_value
-    arr[existing_y, existing_x] = 100 # max_z.z.values
+    arr[existing_y, existing_x] = max_z.z.values
     new_file = write_bin_file(input_file.replace(".las", "_max_z.npy"), arr, 6,  x.min(), y.min(), no_data_value)
     output_files["max_z"] = new_file
 

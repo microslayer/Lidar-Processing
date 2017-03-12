@@ -15,7 +15,7 @@ def start_available_job():
 
 def get_tiles_to_process(job_id):
     # Get tiles associated with the given job
-    sql = "select tile_id, url from job_tile a inner join tile_index b on a.tile_id = b.gid where a.job_id = %s limit 5"
+    sql = "select tile_id, url from job_tile a inner join tile_index b on a.tile_id = b.gid where a.job_id = %s limit 15"
     t = db.get_rows(sql, [job_id])
     results = []
     for d in t:
@@ -32,8 +32,8 @@ def update_job_status(job_id, status):
     sql = "update job set status=%s where gid=%s"
     db.exec_sql(sql, [status, job_id])
 
-def add_map_layer(job_id, town_id, layer_name, map_url):
-    sql = "insert into map_layer (job_id, (select town_id from job where job_id=%s), layer_name, url) values (%s, %s, %s, %s)"
+def add_map_layer(job_id, layer_name, map_url):
+    sql = "insert into map_layer (job_id, town_id, name, url) values (%s, (select max(town_id) from job where gid=%s), %s, %s)"
     db.exec_sql(sql, [job_id, job_id, layer_name, map_url])
 
 def complete_job(job_id, town_id, map_url):

@@ -1,4 +1,3 @@
-import uuid
 import psycopg2  as pg
 import config as conf
 

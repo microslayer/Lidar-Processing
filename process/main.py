@@ -8,6 +8,9 @@ import las2grid as lg
 from collections import defaultdict
 import time as tm
 
+# To install components in python34-64 when it is not the default python install, use this:
+# c:\python34_64\python.exe c:\python34_64\Scripts\pip3.4.exe install numpy
+
 # Running function so we can centralize timings and file cleanups
 def run_function(f, input_file):
     print ("Starting:", f.__name__)
@@ -38,11 +41,11 @@ def process_tile(t, output_tiles):
         output_tiles[k].append(run_function(steps.add_srs_to_tiff, cur_file))
     jm.update_tile_status(t["id"], 3)  # Tiffs created
 
-def create_layer(job_id, layer_name, folder, file_list):
-    mosaic = steps.mosaic_tiles(file_list, job_id)
+def create_layer(job_id, layer_name, identifier, file_list):
+    mosaic = steps.mosaic_tiles(file_list, job_id, identifier)
     mosaic = steps.add_srs_to_tiff(mosaic)
-    steps.create_output_tiles(mosaic, folder)
-    jm.add_map_layer(job_id, layer_name, folder)
+    steps.create_output_tiles(mosaic, identifier + "/")
+    jm.add_map_layer(job_id, layer_name, identifier + "/")
 
 def main():
     # Get list of files to process from s3 bucket
@@ -56,6 +59,11 @@ def main():
             tiles = jm.get_tiles_to_process(job_id)
             # Process each one
             for t in tiles:
+                # For debugging:
+                # output_tiles["max_z"].append(conf.work_path + str(t["id"]) + "_max_z_float_3857.tif")
+                # output_tiles["range_z"].append(conf.work_path + str(t["id"]) + "_range_z_float_3857.tif")
+                # output_tiles["mean_i"].append(conf.work_path + str(t["id"]) + "_mean_i_float_3857.tif")
+                # continue
                 start_time = tm.time()
                 try:
                     process_tile(t, output_tiles)
@@ -66,9 +74,9 @@ def main():
                     print ("Time for: " + str(t) + ": " + str(round(tm.time() - start_time, 2)))
                     print ("***************************************************************")
             jm.update_job_status(job_id, 3)  # Set status to map generation
-            create_layer(job_id, "Surface model", str(job_id) + "_dsm/", output_tiles["max_z"])
-            create_layer(job_id, "Height", str(job_id) + "_height/", output_tiles["range_z"])
-            create_layer(job_id, "Intensity", str(job_id) + "_intensity/", output_tiles["mean_id"])
+            create_layer(job_id, "Surface model", str(job_id) + "_dsm", output_tiles["max_z"])
+            create_layer(job_id, "Height", str(job_id) + "_height", output_tiles["range_z"])
+            create_layer(job_id, "Intensity", str(job_id) + "_intensity", output_tiles["mean_i"])
             jm.update_job_status(job_id, 4)  # Set status to done
     print ("All done!")
     print("Elapsed time:", tm.time() - overall_start_time)
