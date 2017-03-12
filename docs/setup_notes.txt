@@ -1,0 +1,30 @@
+Steps used to configure machine:
+1.	Installed Chrome via Internet Explorer.
+2.	Installed NotePad++, allowing option for context menu link.
+3.	In control panel, changed folder display to show hidden files and to show extensions for known file types.
+4.	Installed Anaconda Python 3.5 64-bit in c:\anaconda3 and accepted option to put c:\anaconda3 on the system path.
+5.	Installed Orange and Python 3.4 32-bit into c:\Python34.
+6.	Installed Python 3.4 64-bit into c:\Python34_64.
+7.	Installed GDAL into c:\program files\GDAL
+8.	Added GDAL paths and environment variables as described here: https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows
+9.	Verified GDAL installation as described here: 
+https://pcjericks.github.io/py-gdalogr-cookbook/
+10.	Installed Atom text editor accepting defaults.
+11.	Installed QGIS accepting defaults.
+12.	Installed Postgres 9.6, login postgres/quagga, port 5432.
+13.	Added PostGIS 2.3 64-bit using stack builder, with option to create spatial database selected.  Enabled raster environment variable settings, but declined to let installer overwrite GDAL_DATA.
+14.	Unzipped SAGA gis to c:\saga
+15.	Installed TortoiseGit and TortoiseSVN with default settings.
+16.	Installed Node.js with defaults.
+17.	Installed http-server with npm as described here http://stackoverflow.com/questions/6084360/using-node-js-as-a-simple-web-server.
+18.	Installed BeyondCompare trial with option for Explorer context menus.
+19.	Installed TileMill into c:\tilemill.
+20.	Created test postgis db, table, and data interactively: insert into test_table(id, pt, attr) values (1, ST_GeomFromText('POINT(-74.0059 40.7128)', 4326), 'New York City').
+21.	Created starting code in c:\projects\samples including sample service and web site.
+22.	Installed python 2.7 into c:\python27 for mapnik.
+23.	Unzipped mapnik into c:\ and added environment variables as described here:  https://github.com/mapnik/mapnik/wiki/WindowsInstallation.
+24.	Installed mbutil directory into python 2.7 site-packages directory.
+25.	Created c:\mbutil directory and batch file for extracting tiles from mbtiles format.
+26.	Installed git for windows, using windows cmd interface, not changing path, not changing line endings.
+27.	Synced c:\Projects\class_respotory with github public repository gtech734 under user gmg444.
+
