@@ -15,7 +15,7 @@ def start_available_job():
 
 def get_tiles_to_process(job_id):
     # Get tiles associated with the given job
-    sql = "select tile_id, url from job_tile a inner join tile_index b on a.tile_id = b.gid where a.job_id = %s limit 15"
+    sql = "select tile_id, url from job_tile a inner join tile_index b on a.tile_id = b.gid where a.job_id = %s"
     t = db.get_rows(sql, [job_id])
     results = []
     for d in t:

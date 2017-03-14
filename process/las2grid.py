@@ -26,7 +26,6 @@ When running from the command-line, type activate ph27 before running
 """
 
 def write_bin_file(file_name, arr, bit_depth, x_min, y_min, no_data_value):
-
     # bit depths:
     # 0 = unsigned byte
     # 2 = unsigned 2-byte word
@@ -37,7 +36,8 @@ def write_bin_file(file_name, arr, bit_depth, x_min, y_min, no_data_value):
     dt = np.float32
     if bit_depth == 3:
         dt = np.int32
-    np.save(file_name, arr.astype(dt))
+    # Next line saves raw binary 32-bit float
+    arr.astype(np.float32).tofile(file_name)
 
     # Numpy will add .npy by defult - remove to get the base file name, and let saga import the data
     output_file = file_name.replace(".npy", "")
@@ -55,19 +55,18 @@ def write_bin_file(file_name, arr, bit_depth, x_min, y_min, no_data_value):
         print ("Could not delete LAS file.", e)
     return output_file + ".sdat"
 
-
 def generate_grids(input_file):
     no_data_value = -1
     output_files = {}
 
     # Read in las file with laspy
     f = ls.file.File(input_file, mode="rw")
-    x = (f.X * f.header.scale[0]) + f.header.offset[0]
-    y = (f.Y * f.header.scale[1]) + f.header.offset[1]
+    X = (f.X * f.header.scale[0]) + f.header.offset[0]
+    Y = (f.Y * f.header.scale[1]) + f.header.offset[1]
 
     # Projection from https://gist.github.com/springmeyer/871897, vectorized with numpy
-    x = (x * 20037508.34 / 180.0)
-    y = (np.log(np.tan((90.0 + y) * math.pi / 360.0)) / (math.pi / 180.0) * 20037508.34 / 180.0)
+    x = (X * 20037508.34 / 180.0)
+    y = (np.log(np.tan((90.0 + Y) * math.pi / 360.0)) / (math.pi / 180.0) * 20037508.34 / 180.0)
     z = (f.Z * f.header.scale[2])
 
     # Create int array for indexing grid x, y

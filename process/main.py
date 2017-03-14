@@ -7,6 +7,7 @@ import job_manager as jm
 import las2grid as lg
 from collections import defaultdict
 import time as tm
+import glob as gl
 
 # To install components in python34-64 when it is not the default python install, use this:
 # c:\python34_64\python.exe c:\python34_64\Scripts\pip3.4.exe install numpy
@@ -16,10 +17,7 @@ def run_function(f, input_file):
     print ("Starting:", f.__name__)
     output_file = f(input_file)
     # Deletes processed files to save space.
-    try:
-        os.remove(input_file)
-    except Exception as e:
-        print ("Could not delete LAS file.", e)
+
     return output_file
 
 def process_tile(t, output_tiles):
@@ -53,6 +51,7 @@ def main():
         tm.sleep(conf.sleep_time_in_seconds) # Wait for 10 seconds before continuing, to let other tasks run.
         job_id = jm.start_available_job()
         if not job_id is None:
+            print ("Starting job")
             jm.update_job_status(job_id, 2)  # Set status to processing
             output_tiles = defaultdict(list)
             overall_start_time = tm.time()
@@ -67,6 +66,11 @@ def main():
                 start_time = tm.time()
                 try:
                     process_tile(t, output_tiles)
+                    # Clean up interim files 
+                    for f_name in gl.glob(conf.work_path + "*.*"):
+                        if not f_name.endswith(".tif"):
+                            os.remove(f_name)
+                    print ("Processed " + str(t))
                 except Exception as ex:
                     print ("Exception processsing tile {0}".format(str(t)), ex)
                 finally:
@@ -78,7 +82,9 @@ def main():
             create_layer(job_id, "Height", str(job_id) + "_height", output_tiles["range_z"])
             create_layer(job_id, "Intensity", str(job_id) + "_intensity", output_tiles["mean_i"])
             jm.update_job_status(job_id, 4)  # Set status to done
-    print ("All done!")
+            print ("All done!")
+        else:
+            print ("No available jobs found")
     print("Elapsed time:", tm.time() - overall_start_time)
 
 if __name__ == "__main__":

@@ -58,11 +58,12 @@ def mosaic_tiles(input_tiles, job_id, identifier):
     # No data is -1 here - to  handle no data correctly, use add this command line:  -n -1
     # Problem is, this requires gdal_array, which is not profided with current version. see:
     # https://github.com/conda-forge/gdal-feedstock/issues/131
-    cmd = 'C:/Python34_64/python.exe "C:/Program Files/GDAL/gdal_merge.py" -o {0} {1}'.format(output_file, tile_str)
+    cmd = 'C:/Anaconda2/python.exe "C:/Program Files/GDAL/gdal_merge.py" -init -1 -n -1 -o {0} {1}'.format(output_file, tile_str)
     sb.call(cmd, shell=False)
     return output_file
 
 def create_output_tiles(mosaic, folder):
     output_dir = conf.work_path + folder
-    cmd = 'C:/Python34_64/python.exe "C:/Program Files/GDAL/gdal2tiles.py" {0} {1}'.format(mosaic, output_dir)
+    # -a argument required, with 0,0,0 - see http://gis.stackexchange.com/questions/143818/osgeo4w-and-gdal-gdal2tiles-py-error
+    cmd = 'C:/Anaconda2/python.exe "C:/Program Files/GDAL/gdal2tiles.py" {0} {1} -a 0,0,0'.format(mosaic, output_dir)
     sb.call(cmd, shell=False)
