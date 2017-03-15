@@ -175,13 +175,13 @@ class Server(object):
 # This should usually be the main entry point of the service application, so __name__ should equal "__main__"
 if __name__ == '__main__':
     # Set up site-wide config first so we get a log if errors occur.
-    cherrypy.config.update({'environment': 'production',
-                        'log.access_file': None,  # 'site.log',
-                        'log.screen': True,
-                        'server.thread_pool': 10,
-                        'server.socket_host': '0.0.0.0',
-                        'tools.encode.on': True,
-                        'tools.encode.encoding': 'utf-8',
-                        'server.socket_port': conf.port})
+    #cherrypy.config.update({'environment': 'production',
+    #                    'log.access_file': None,  # 'site.log',
+    ##                    'log.screen': True,
+    # #                   'server.thread_pool': 10,
+    #                    'server.socket_host': '0.0.0.0',
+    #                    'tools.encode.on': True,
+    #                    'tools.encode.encoding': 'utf-8',
+    #                    'server.socket_port': conf.port})
     # CherryPy creates an instance of the server object, then spins up multiple threads to access that server.
     cherrypy.quickstart(Server())
