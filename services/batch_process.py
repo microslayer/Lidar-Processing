@@ -71,4 +71,38 @@ def job_status(job_id):
     cnxn.close()
     return result
 
+def fetch_tile_list(lat, lon):
+
+    cnxn = None
+    #  locate town containing coordinate
+    sql = """SELECT ST_ASTEXT(geom)
+             FROM us_town
+             WHERE ST_Contains(geom, st_geomfromtext('POINT({0} {1} )', 4326))""".format(str(lon), str(lat))
+
+    try:
+
+        cnxn = pg.connect(host=conf.db["host"], database=conf.db["database"], user=conf.db["user"], password=conf.db["password"])
+        cursor = cnxn.cursor()
+        cursor.execute(sql)
+
+        # find the tiles that are within the town corresponding to the coordinate
+        sql = """ SELECT index
+                  FROM  tile_index
+                  WHERE ST_Within(geom, st_geomfromtext('{0}',4326))""".format(cursor.fetchone()[0])
+        cursor.execute(sql)
+
+        # return the tile indices
+        results = []
+        for row in cursor.fetchall():
+            results.append(row[0])
+        cursor.close()
+        return results
+    except (Exception, pg.DatabaseError) as error:
+        return error
+    finally:
+        if cnxn is not None:
+            cnxn.close()
+
+
+
 
