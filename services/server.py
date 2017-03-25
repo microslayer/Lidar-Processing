@@ -163,6 +163,22 @@ class Server(object):
     # Other endpoints as needed - don't put too much here so this file doesn't get
     # too huge - most of the work can be done in external modules.
     # --------------------------------------------------------------------------------
+    @cherrypy.expose
+    def tiles_at_coords (self, lat,lon):
+        # Example endpoint, accessible via:
+        # http://localhost:8080/example?lat=42.442302&lon=-73.0788755
+        try:
+            result = self.get_response_wrapper()
+            result["data"]['coords'] = [lat, lon]
+            vals = bp.fetch_tile_list(lat, lon)
+            result["data"]['# of tiles'] = len(vals)
+            return self.encode_results(result)
+
+        except Exception as e:
+            result["status"] = 500
+            result["message"] = "{0} {1}".format(e, tb.format_exc())
+
+        return self.encode_results(result)
 
     @cherrypy.expose
     def example(self, lat, lon):
