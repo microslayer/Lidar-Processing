@@ -53,15 +53,27 @@ def slope_aspect(input_file):
     sb.call(cmd, shell=False)
     return output_file
 
-# 8. export .tif files
+# 8. export .tif image (A. regular .tif image; B. GeoTIFF image)
+
+#   A. export regular .tif image, only output total solar radiation image. (every pixel on the output image stores RGB value)
+#def export_tif(slope_grid, aspect_grid):
+#    output_slope_tif = slope_grid.replace(".sgrd", ".tif")
+#    output_aspect_tif = aspect_grid.replace(".sgrd", ".tif")
+#    # -COL_PALETTE=9 yellow & red
+#    cmd = "saga_cmd -f=s io_grid_image 0 -GRID={0} -FILE={1} -COL_PALETTE=9".format(slope_grid, output_slope_tif)
+#    sb.call(cmd, shell=False)
+#    # -COL_PALETTE=6 white & red
+#    cmd = "saga_cmd -f=s io_grid_image 0 -GRID={0} -FILE={1} -COL_PALETTE=6".format(aspect_grid, output_aspect_tif)
+#    sb.call(cmd, shell=False)
+#    return output_slope_tif, output_aspect_tif
+
+#   B. export GeoTIFF image, only output total solar radiation image. (every pixel on the output image stores slope/aspect value)
 def export_tif(slope_grid, aspect_grid):
     output_slope_tif = slope_grid.replace(".sgrd", ".tif")
     output_aspect_tif = aspect_grid.replace(".sgrd", ".tif")
-    # -COL_PALETTE=9 yellow & red
-    cmd = "saga_cmd -f=s io_grid_image 0 -GRID={0} -FILE={1} -COL_PALETTE=9".format(slope_grid, output_slope_tif)
+    cmd = "saga_cmd -f=s io_gdal 2 -GRID={0} -FILE={1}".format(slope_grid, output_slope_tif)
     sb.call(cmd, shell=False)
-    # -COL_PALETTE=6 white & red
-    cmd = "saga_cmd -f=s io_grid_image 0 -GRID={0} -FILE={1} -COL_PALETTE=6".format(aspect_grid, output_aspect_tif)
+    cmd = "saga_cmd -f=s io_gdal 2 -GRID={0} -FILE={1}".format(aspect_grid, output_aspect_tif)
     sb.call(cmd, shell=False)
     return output_slope_tif, output_aspect_tif
 
