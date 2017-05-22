@@ -64,7 +64,6 @@ def solar_radiation(input_file):
 #   B. export GeoTIFF image, only output total solar radiation image. (every pixel on the output image stores solar radiation value)
 def export_tif(input_file):
     output_file = input_file.replace(".sgrd", ".tif")
-    # -COL_PALETTE=13 red & blue
     cmd = "saga_cmd -f=s io_gdal 2 -GRID={0} -FILE={1}".format(input_file, output_file)
     sb.call(cmd, shell=False)
     return output_file
