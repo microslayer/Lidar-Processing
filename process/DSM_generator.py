@@ -51,15 +51,25 @@ def solar_radiation(input_file):
     sb.call(cmd, shell=False)
     return output_file
 
-# 6.export .tif image, only output total solar radiation image
+# 6. export .tif image (A. regular .tif image; B. GeoTIFF image)
+
+#   A. export regular .tif image, only output total solar radiation image. (every pixel on the output image stores RGB value)
+#def export_tif(input_file):
+#    output_file = input_file.replace(".sgrd", ".tif")
+    # -COL_PALETTE=13 red & blue
+#    cmd = "saga_cmd -f=s io_grid_image 0 -GRID={0} -FILE={1} -COL_PALETTE=13".format(input_file, output_file)
+#    sb.call(cmd, shell=False)
+#    return output_file
+
+#   B. export GeoTIFF image, only output total solar radiation image. (every pixel on the output image stores solar radiation value)
 def export_tif(input_file):
     output_file = input_file.replace(".sgrd", ".tif")
     # -COL_PALETTE=13 red & blue
-    cmd = "saga_cmd -f=s io_grid_image 0 -GRID={0} -FILE={1} -COL_PALETTE=13".format(input_file, output_file)
+    cmd = "saga_cmd -f=s io_gdal 2 -GRID={0} -FILE={1}".format(input_file, output_file)
     sb.call(cmd, shell=False)
     return output_file
 
-# 7.generate tile files
+# 7. generate tile files
 def tile_generator(input_file):
     output_file = input_file.replact(".tif", "_tiles")
     # -z 0-5 (zoom level 0-5), -w none (diable HTML output)
